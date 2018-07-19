@@ -319,42 +319,32 @@ function clipParallax(scrollPosition, start, duration, startValue, endValue, eas
   let min = startValue
   let max = endValue
 
-  // console.log(min, max)
-  // const invert = startValue > endValue
-
-  //we need an array of arrays here: [[0,0],[0,100],[100,100],[100,0]]
-  //each nested array is a set of coordinates for a point 
-  //the length of both arrays must be the same
-  // if (invert) {
-    // min = endValue;
-    // max = startValue;
-  // }
   let percentage = ((scrollPosition - start) / duration)
   if (percentage > 1) {
     percentage = 1;
   } else if (percentage < 0) {
     percentage = 0;
   }
-  // if (easing) {
-  //   const easingPropType = typeof easing;
-  //   if (easingPropType === 'object' && easing.length === 4) {
-  //     percentage = BezierEasing(
-  //       easing[0],
-  //       easing[1],
-  //       easing[2],
-  //       easing[3]
-  //     )(percentage);
-  //   } else if (easingPropType === 'string' && EASINGS[easing]) {
-  //     percentage = BezierEasing(
-  //       EASINGS[easing][0],
-  //       EASINGS[easing][1],
-  //       EASINGS[easing][2],
-  //       EASINGS[easing][3]
-  //     )(percentage);
-  //   } else if (easingPropType === 'function') {
-  //     percentage = easing(percentage);
-  //   }
-  // }
+  if (easing) {
+    const easingPropType = typeof easing;
+    if (easingPropType === 'object' && easing.length === 4) {
+      percentage = BezierEasing(
+        easing[0],
+        easing[1],
+        easing[2],
+        easing[3]
+      )(percentage);
+    } else if (easingPropType === 'string' && EASINGS[easing]) {
+      percentage = BezierEasing(
+        EASINGS[easing][0],
+        EASINGS[easing][1],
+        EASINGS[easing][2],
+        EASINGS[easing][3]
+      )(percentage);
+    } else if (easingPropType === 'function') {
+      percentage = easing(percentage);
+    }
+  }
 
   const result = min.map((vertex,i)=>{
     //vertex = [x,y]
@@ -380,17 +370,6 @@ function clipParallax(scrollPosition, start, duration, startValue, endValue, eas
     
   })
 
-
-  // let value = percentage * (max - min);
-
-  // if (invert) {
-  //   value = max - value;
-  // } else {
-  //   value += min;
-  // }
-
-  // return parseFloat(value.toFixed(3));
-  // console.log(...result)
   return result
 
 }
