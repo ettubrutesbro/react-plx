@@ -314,12 +314,92 @@ function rgbToObject(rgb) {
   };
 }
 
+function clipParallax(scrollPosition, start, duration, startValue, endValue, easing){
+  // console.log('yay')
+  let min = startValue
+  let max = endValue
+
+  // console.log(min, max)
+  // const invert = startValue > endValue
+
+  //we need an array of arrays here: [[0,0],[0,100],[100,100],[100,0]]
+  //each nested array is a set of coordinates for a point 
+  //the length of both arrays must be the same
+  // if (invert) {
+    // min = endValue;
+    // max = startValue;
+  // }
+  let percentage = ((scrollPosition - start) / duration)
+  if (percentage > 1) {
+    percentage = 1;
+  } else if (percentage < 0) {
+    percentage = 0;
+  }
+  // if (easing) {
+  //   const easingPropType = typeof easing;
+  //   if (easingPropType === 'object' && easing.length === 4) {
+  //     percentage = BezierEasing(
+  //       easing[0],
+  //       easing[1],
+  //       easing[2],
+  //       easing[3]
+  //     )(percentage);
+  //   } else if (easingPropType === 'string' && EASINGS[easing]) {
+  //     percentage = BezierEasing(
+  //       EASINGS[easing][0],
+  //       EASINGS[easing][1],
+  //       EASINGS[easing][2],
+  //       EASINGS[easing][3]
+  //     )(percentage);
+  //   } else if (easingPropType === 'function') {
+  //     percentage = easing(percentage);
+  //   }
+  // }
+
+  const result = min.map((vertex,i)=>{
+    //vertex = [x,y]
+    // console.log(vertex)
+    const invertX = vertex[0] > max[i][0]
+    const invertY = vertex[1] > max[i][1]
+
+    const bigX = invertX? vertex[0] : max[i][0]
+    const smallX = !invertX? vertex[0] : max[i][0]
+    const bigY = invertY? vertex[1] : max[i][1]
+    const smallY = !invertY? vertex[1] : max[i][1]
+
+    let targetX = percentage * (bigX - smallX) //just diffs at this point
+    let targetY = percentage * (bigY - smallY) //just diffs at this point
+
+    if(invertX) targetX = bigX - targetX
+    else targetX += vertex[0]
+
+    if(invertY) targetY = bigY - targetY
+    else targetY += vertex[1]
+    
+    return [parseFloat(targetX.toFixed(3)), parseFloat(targetY.toFixed(3))]
+    
+  })
+
+
+  // let value = percentage * (max - min);
+
+  // if (invert) {
+  //   value = max - value;
+  // } else {
+  //   value += min;
+  // }
+
+  // return parseFloat(value.toFixed(3));
+  // console.log(...result)
+  return result
+
+}
+
 // Calculates the current value for parallaxing property
 function parallax(scrollPosition, start, duration, startValue, endValue, easing) {
   let min = startValue;
   let max = endValue;
   const invert = startValue > endValue;
-
 
   // Safety check, if "startValue" is in the wrong format
   if (typeof startValue !== 'number') {
@@ -425,8 +505,9 @@ function applyProperty(scrollPosition, propertyData, startPosition, duration, st
 
   // If property is one of the color properties
   // Use it's parallax method
+  const isClipPath = property==='clipPath'
   const isColor = COLOR_PROPERTIES.indexOf(property) > -1;
-  const parallaxMethod = isColor ? colorParallax : parallax;
+  const parallaxMethod = isClipPath? clipParallax : isColor ? colorParallax : parallax;
 
   // Get new CSS value
   const value = parallaxMethod(
@@ -453,6 +534,8 @@ function applyProperty(scrollPosition, propertyData, startPosition, duration, st
     const propertyUnit = getUnit(property, unit);
     // Filters, apply value to filter function
     newStyle.filter[property] = filterMethod(value, propertyUnit);
+  } else if (isClipPath){
+    console.log(...value)
   } else {
     // All other properties
     newStyle[property] = value;
