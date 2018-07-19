@@ -11,7 +11,8 @@ const phoneData = [
       {
         startValue: [[0,0],[0,100],[100,100],[100,0]],
         endValue: [[10,0],[0,90],[90,100],[50,0]],
-        property: 'clipPath'
+        property: 'clipPath',
+        unit: '%'
       },
       {
         startValue: 90,

@@ -69,6 +69,13 @@ const SCROLL_OFFSET = 50;
 
 const RESIZE_DEBOUNCE_TIMEOUT = 150;
 
+const CLIPARRAY_TO_CSS = (arr) => {
+  // [[x,y],[x,y]]
+  return `polygon(${arr.map((vertex)=>{
+    return `${vertex[0]} ${vertex[1]}`
+  }).join(', ')})` 
+}
+
 // CSS transform map
 const TRANSFORM_MAP = {
   rotate: (value, unit: DEFAULT_ANGLE_UNIT) => `rotate(${ value }${ unit })`,
@@ -366,7 +373,7 @@ function clipParallax(scrollPosition, start, duration, startValue, endValue, eas
     if(invertY) targetY = bigY - targetY
     else targetY += vertex[1]
     
-    return [parseFloat(targetX.toFixed(3)), parseFloat(targetY.toFixed(3))]
+    return [parseFloat(targetX.toFixed(3))+'%', parseFloat(targetY.toFixed(3))+'%']
     
   })
 
@@ -514,7 +521,9 @@ function applyProperty(scrollPosition, propertyData, startPosition, duration, st
     // Filters, apply value to filter function
     newStyle.filter[property] = filterMethod(value, propertyUnit);
   } else if (isClipPath){
-    console.log(...value)
+    // console.log(...value)
+    // console.log(CLIPARRAY_TO_CSS(value))
+    newStyle[property] = CLIPARRAY_TO_CSS(value)
   } else {
     // All other properties
     newStyle[property] = value;
