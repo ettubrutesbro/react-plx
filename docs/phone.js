@@ -4,23 +4,23 @@ import Plx from '../source/index';
 const phoneData = [
   {
     start: 'self',
-    startOffset: 300,
+    startOffset: 400,
     duration: 500,
     easing: [0.25, 0.1, 0.6, 1.5],
     properties: [
       {
         startValue: [[0,0],[0,100],[100,100],[100,0]],
-        endValue: [[10,0],[0,90],[90,100],[50,0]],
+        endValue: [[20,0],[0,80],[70,100],[40,0]],
         property: 'clipPath',
         unit: '%'
       },
+      // {
+      //   startValue: 90,
+      //   endValue: 0,
+      //   property: 'rotate',
+      // },
       {
-        startValue: 90,
-        endValue: 0,
-        property: 'rotate',
-      },
-      {
-        startValue: 0,
+        startValue: 1,
         endValue: 1,
         property: 'scale',
       },
